@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQIu9" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-HwwvtgBNo3bZJJLYd8oVXjrBZt8cqVSpeBNS5n7C8IVInixGAoxmnlMuBnhbgrkm" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+
+
+    <title>Document</title>
+
+</head>
+<body>
+    <div class="container-fluid">
+        <h1 class="text-center text-primary">Social Network Graph</h1>
+        <div class="row">
+            <div class="col-sm-2">
+                <input  type="text" placeholder="Enter Name" class="form-control" id="mainNode"/>
+                <small>Enter UserName one by one</small>
+                <button class="btn btn-success" onclick="handleAddMainNode()">Add NodeName</button>
+            </div>
+          
+           <div class="col-sm-2">
+            
+            <input  class="form-control" placeholder="Enter Source Name" id="source"/>
+            <small>add source and destination name one by one/press addnode to insert</small>
+           </div>
+            <div class="col-sm-2">
+                <input  class="form-control"  placeholder="Enter Destination Name" id="destination"/></div>
+                <div class="col-sm-2">
+                    <button class="btn btn-success" onclick="handleAddNode()">Add Node</button>
+                </div>
+                <div class="col-sm-2">
+                    <input class="form-control" placeholder="Enter Starting Soruce Name" id="src"/>
+                    <small>add the source node and press start</small>
+                    <button class="btn btn-success my-1" onclick="start()">Start</button>
+                </div>
+        </div>
+        
+      
+       
+   
+
+
+       </div>
+       <div  id="container">
+
+       </div>
+
+    </div>
+    
+</body>
+<script>
+
+class Graph{
+    constructor(){
+        this.adjList=new Map();
+    }
+    addNode(node){
+        this.adjList.set(node,[]);
+    }
+    addEdge(node1,node2){
+        this.adjList.get(node1).push(node2);
+    }
+}
+
+const graph=new Graph();
+// const node=new Node();
+
+const handleAddNode=()=>{
+
+    //Add Node
+   const src=document.getElementById("source").value;
+   const destination=document.getElementById("destination").value;
+   graph.addEdge(src,destination);
+   graph.addEdge(destination,src);
+   console.log(graph.adjList);
+   alert(`added ${src} and ${destination} as Node`);
+   
+  
+   
+
+   //Add Main Node
+
+}
+
+const handleAddMainNode=()=>{
+    const mainNode=document.getElementById("mainNode").value;
+    console.log(mainNode)
+    graph.addNode(mainNode);
+    console.log(graph.adjList);
+    alert("Added "+mainNode);
+
+}
+
+const bfs=(startNode)=>{
+
+        const visited = new Set();
+        const queue = [];
+        queue.push(startNode);
+        visited.add(startNode);
+        const container=document.getElementById("container");
+        const parent = document.createElement('div');
+        const hr=document.createElement('hr');
+        parent.classList.add('row','d-flex','justify-content-center');
+        const btn=document.createElement('button');
+             btn.textContent=startNode;
+             btn.classList.add('btn','btn-danger','mx-2');
+             btn.style.width = '50px';
+             parent.appendChild(btn);
+             container.append(parent);
+             container.append(hr);
+
+
+       
+
+        while (queue.length > 0) {
+
+            const currentNode = queue.shift();
+             const neighbors = graph.adjList.get(currentNode);
+            const child=document.createElement('div');
+            child.classList.add('row','d-flex','justify-content-center','my-2');
+            const hr=document.createElement('hr')
+            for (const neighbor of neighbors) {
+             if (!visited.has(neighbor)) {
+                const childButton=document.createElement('button');
+             childButton.textContent=neighbor;
+             childButton.classList.add('btn','btn-danger','mx-2');
+             childButton.style.width = '50px';
+             child.appendChild(childButton);
+             container.append(child);
+             container.append(hr);
+                    queue.push(neighbor);
+                    visited.add(neighbor);
+                }
+            }
+            
+        }
+    }
+
+const start=()=>{
+    const src=document.getElementById("src").value;
+    bfs(src);
+
+}
+
+
+
+
+</script>
+</html>
